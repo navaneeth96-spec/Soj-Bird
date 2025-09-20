@@ -103,12 +103,9 @@ const bird = {
   x: 50, y: 200, w: 34, h: 24,
   frame: 0, velocity: 0, gravity: 0.25, jump: 4.5, alive: false, rotation: 0,
   draw() {
-    ctx.save();
-    ctx.translate(this.x + this.w/2, this.y + this.h/2);
-    ctx.rotate(this.rotation);
-    ctx.drawImage(birdFrames[this.frame], -this.w/2, -this.h/2);
-    ctx.restore();
-  },
+  ctx.drawImage(birdFrames[this.frame], this.x, this.y, this.w, this.h);
+},
+
   flap() {
     this.velocity = -this.jump;
     this.alive = true;
@@ -122,8 +119,8 @@ const bird = {
     this.y += this.velocity;
 
     // Smooth rotation
-    if (this.velocity < 0) this.rotation = -0.3;
-    else this.rotation += (Math.PI/2 - this.rotation) * 0.05;
+    // if (this.velocity < 0) this.rotation = -0.3;
+    // else this.rotation += (Math.PI/2 - this.rotation) * 0.05;
 
     // Ground collision
     if (this.y + this.h >= GAME_HEIGHT - groundHeight) {
