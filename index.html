@@ -8,16 +8,15 @@
 <style>
   body {
     margin: 0;
+    background: #70c5ce;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #70c5ce;
     height: 100vh;
-    overflow: hidden;
   }
   canvas {
     display: block;
-    touch-action: manipulation;
   }
   #gameOverOverlay {
     position: absolute;
@@ -50,21 +49,25 @@ const overlay = document.getElementById("gameOverOverlay");
 const scoreText = document.getElementById("gameOverScore");
 const highText = document.getElementById("gameOverHigh");
 
+// Original resolution
 const GAME_WIDTH = 288;
 const GAME_HEIGHT = 512;
 
-// Scale canvas for mobile screens
+// Scale canvas to fill mobile screen while keeping ratio
 function resizeCanvas() {
-  const ratio = window.devicePixelRatio || 1;
-  canvas.width = GAME_WIDTH * ratio;
-  canvas.height = GAME_HEIGHT * ratio;
-  canvas.style.width = GAME_WIDTH + "px";
-  canvas.style.height = GAME_HEIGHT + "px";
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  const scaleX = window.innerWidth / GAME_WIDTH;
+  const scaleY = window.innerHeight / GAME_HEIGHT;
+  const scale = Math.min(scaleX, scaleY);
+
+  canvas.width = GAME_WIDTH * scale;
+  canvas.height = GAME_HEIGHT * scale;
+
+  ctx.setTransform(scale, 0, 0, scale, 0, 0); // scale drawing
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+// Game variables
 let frames = 0;
 let score = 0;
 let highScore = localStorage.getItem("flappyHighScore") || 0;
@@ -151,7 +154,7 @@ function drawPipes() {
 function updatePipes() {
   if (!bird.alive) return;
   pipes.forEach(p => {
-    p.x -= 2; // slightly faster
+    p.x -= 2;
     if (!p.scored && p.x + pipeWidth < bird.x) {
       score++; 
       p.scored = true;
